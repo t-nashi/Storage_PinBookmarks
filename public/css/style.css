@@ -1,0 +1,649 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC');
+/************************************************************************************
+ GENERAL SETTING
+*************************************************************************************/
+html { background-color: transparent; }
+html, body {
+	font: 16px/1.8 "Hiragino Kaku Gothic Pro","ヒラギノ角ゴ Pro",Meiryo,"メイリオ",Osaka,"MS PGothic","ＭＳ Ｐゴシック",Arial,Helvetica,sans-serif;
+	color: #333;
+	margin: 0;
+	padding: 0;
+	height:100%;
+}
+*:focus {
+	outline: none;
+}
+*, *:before, *:after {
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+		 -o-box-sizing: border-box;
+		-ms-box-sizing: border-box;
+			box-sizing: border-box;
+}
+.d-none {
+	display: none !important;
+}
+.opacity-100 {
+	opacity: 1 !important;
+}
+.z-index-100 {
+	z-index: 100;
+}
+.z-index-1000 {
+	z-index: 1000;
+}
+
+/************************************************************************************
+ MAIN LAYOUT
+*************************************************************************************/
+#wrapper {
+	position: relative;
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	padding-bottom: 100px;
+}
+#content {
+	padding: 6px;
+}
+
+/* footer
+------------------------------------------- */
+footer {
+	position: absolute;
+	bottom: 0;
+	display: table;
+	text-align: center;
+	color: #eee;
+	height: 100px;
+	width: 100%;
+	background-color: #282828;
+}
+footer .site-title {
+	font-family: 'Amatic SC', cursive;
+	font-size: 40px;
+	display: table-cell;
+	vertical-align: middle;
+	line-height: 100px;
+}
+
+/************************************************************************************
+ CONTENT
+*************************************************************************************/
+
+/* 一言メッセージボード（jsで必要な時に一時的に生成されるボード）
+------------------------------------------- */
+.notifyMessage {
+	display: none;
+	position: fixed;
+	padding: 6px 20px;
+	z-index: 1050;
+	top: 50%;
+	left: 50%;
+	transform: translateY(-50%) translateX(-50%);
+	text-align: center;
+	font-size: 14px;
+	color: #fff;
+	background-color: rgba(51,51,51, 0.9);
+	border-radius: 5px;
+}
+.notifyMessage .color {
+	color: #5EA6E9;
+}
+
+/* dropZone（画像アップロード用のドラッグ＆ドロップ・画像セレクトボタンエリア）
+------------------------------------------- */
+#dropZone {
+	font-family: 'Amatic SC', cursive;
+	font-size: 30px;
+	line-height: 1.2;
+	border: 2px dashed #bbbbbb;
+	border-radius: 5px;
+	color: #333;
+	padding: 10px;
+	text-align: center;
+	width: 100%;
+	transition: all .6s;
+}
+#dropZone p {
+	margin: 0px 2px;
+	padding: 0;
+}
+#dropZone.dragover {
+	background-color: #abf0ff;
+}
+
+.selectFile {
+	color: #333;
+	font-size: 24px !important;
+	line-height: 0.4;
+	display: inline-block;
+	overflow: hidden;
+	position: relative;
+	padding: .5em;
+	font-size: 10pt;
+	border: 1px solid #999;
+	background-color: #eee;
+	transition: all .6s;
+}
+.selectFile input[type="file"] {
+	opacity: 0;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+	position: absolute;
+	right: 0;
+	top: 0;
+	margin: 0;
+	font-size: 100px;
+	cursor: pointer;
+}
+.selectFile:hover,
+.selectFile:active {
+	background-color: #ffffff;
+}
+
+/* ファイルアップロードログを載せるボード
+------------------------------------------- */
+#logBoard {
+	display: none;
+
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translateY(-50%) translateX(-50%);
+	text-align: center;
+	font-size: 14px;
+	color: #fff;
+	background-color: rgba(51,51,51, 0.9);
+	border-radius: 5px;
+}
+#logBoard ul {
+	overflow: auto;
+	max-height: 500px;
+	margin: 8px;
+}
+#logBoard ul li {
+	border-bottom: solid 1px #aaa;
+	padding: 4px 0;
+}
+#logBoard ul li:last-child {
+	border-bottom: none;
+}
+#logBoard .color {
+	color: #5EA6E9;
+}
+
+
+/* タグフィルター
+------------------------------------------- */
+#filter {
+	background-color: #282828;
+	padding: 5px 5px 0px 5px;
+	justify-content: center; 
+}
+#filter li {
+	background-color: #f0f0f0;
+	padding: 5px;
+	line-height: 1;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	border-radius: 3px;
+	cursor: pointer;
+	transition: all .6s;
+}
+#filter li:hover,
+#filter li:active {
+	background-color: #ffffff;
+}
+#filter li.active {
+	background-color: #ff0064;
+	color: #fff;
+}
+
+
+/* items（images画像をページ上に表示する際に付けるclass）
+------------------------------------------- */
+.flexbox {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+.flexbox:hover img {
+
+}
+.item {
+	position: relative;
+	height: 100px;
+	display: table;
+	padding: 6px;
+}
+.item .inner {
+	border: 1px solid #eee;
+	position: relative;
+	margin: auto;
+	border-radius: 6px;
+	overflow: hidden;
+	height: 100px;
+}
+.item .tag {
+	padding: 10px;
+	display: table;
+	width: 100%;
+	height: 100px;
+}
+.item .tag div {
+	border-radius: 10px;
+	font-family: 'Amatic SC', cursive;
+	font-size: 24px;
+	line-height: 1;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+}
+.item img {
+	width: 100%;
+	display: block;
+	transition: all .8s;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+}
+.item:hover img{
+	opacity: .5;
+}
+
+
+/* itemsの画像上に乗せる情報郡
+------------------------------------------- */
+.img-overlay-content {
+	display: none;
+}
+@keyframes show {
+	from{
+		opacity: 0;
+	}
+	to{
+		opacity: 1;
+	}
+}
+.img-overlay-content.show{
+	display: block;
+	animation: show .2s linear 0s;
+}
+
+/* inputとtextarea
+------------------------------------------- */
+input,
+textarea {
+	color: #333;
+}
+input:focus,
+textarea:focus {
+	background-color: rgba(255,255,255,0.9);
+}
+.text-tag {
+	position: absolute;
+	width: 100%;
+	top: 0;
+	border: 0;
+	background-color: rgba(255,255,255,0.7);
+	border-radius: 0;
+	padding: 0 10px;
+}
+.text-url {
+	position: absolute;
+	width: 100%;
+	top: 24px;
+	border: 0;
+	background-color: rgba(255,255,255,0.7);
+	border-radius: 0;
+	padding: 0 10px;
+}
+
+/* ボタン
+------------------------------------------- */
+button {
+	position: absolute;
+	border: 0;
+	cursor: pointer;
+}
+/* ファイル名変更を保存する用のボタン */
+button.btn-save-filename {
+	top: 48px;
+	width: 100%;
+	font-size: 14px;
+	line-height: 2;
+	background-color: rgba(255,0,100,.8);
+	color: #fff;
+}
+/* 「x」ボタン（ファイル削除） */
+button.btn-delete {
+	/*top: 0;*/
+	bottom: 6px;
+	right: 6px;
+	margin: auto;
+	padding: 0;
+	width: 36px;
+	height: 36px;
+	line-height: 36px;
+	text-align: center;
+	border-radius: 100px;
+	font-size: 40px;
+	color: #555;
+	background-color: #ddd;
+	z-index: 90;
+}
+button.btn-delete:hover,
+button.btn-delete:active {
+	background-color: #ff0064;
+	color: #fff;
+}
+
+button.btn-save-filename:hover,
+button.btn-save-filename:active,
+button.btn-delete:hover,
+button.btn-delete:active,
+button.btn-save-memo:hover,
+button.btn-save-memo:active {
+	opacity: .8;
+}
+button.btn-save-memo[disabled],
+button.btn-save-filename[disabled] {
+	display: none;
+}
+
+button.btn-test {
+	top: 100px;
+}
+
+/* サムネイル並び → list表示に切り替えた時のスタイル - start
+------------------------------------------- */
+
+.list .item {
+	height: 60px;
+	width: 60px;
+}
+.list .item .inner {
+	overflow: visible;
+	height: 60px;
+}
+.list .item .tag {
+	padding: 0px;
+	height: auto;
+}
+.list .item .tag.inner {
+	border: none;
+}
+.list .item .tag.inner:before {
+	content: "♥";
+	margin-right: 5px;
+	margin-top: 16px;
+	display: block;
+}
+.list .item .tag div {
+	font-size: 30px;
+	text-align: left;
+	white-space: nowrap;
+	padding-top: 16px;
+}
+
+.list .text-tag {
+	left: 60px;
+	border: 1px solid #eee;
+	width: 250px;
+}
+.list .text-url {
+	left: 60px;
+	border: 1px solid #eee;
+	width: 250px;
+}
+
+/* 「x」ボタン（ファイル削除） */
+.list button.btn-delete {
+	top: 0px;
+	left: 320px;
+}
+/* ファイル名変更を保存する用のボタン */
+.list button.btn-save-filename {
+	top: 14px;
+}
+
+/* サムネイル並び → list表示に切り替えた時のスタイル - end
+------------------------------------------- */
+
+/* btnテンプレ
+------------------------------------------- */
+.btn {
+	/* z-index: 100; */
+	transition: all .6s;
+	width: 100px;
+	height: 100px;
+	line-height: 100px;
+	text-align: center;
+	border-radius: 100px;
+	cursor: pointer;
+	position: fixed;
+	bottom: 16px;
+	right: 16px;
+	color: #333;
+	background-color: #eee;
+	border: 1px solid #999;
+	z-index: 999;
+	font-family: 'Amatic SC', cursive;
+	font-size: 24px;
+}
+.btn span {
+	user-select: none;
+}
+.btn:hover,
+.btn:active {
+	background-color: #fff;
+}
+.btn.on {
+	background-color: #02cbf6;
+	border-color: #08b0d4;
+}
+.btn.on:hover,
+.btn.on:active {
+	background-color: #62e3ff;
+}
+
+/* Reloadボタン
+------------------------------------------- */
+.btn-reload {
+	opacity: 0;
+	z-index: 998;
+}
+.btn-reload.pos-on {
+	bottom: 120px;
+}
+
+/* Show Logボタン
+------------------------------------------- */
+.btn-show-logboard {
+	opacity: 0;
+	z-index: 997;
+}
+.btn-show-logboard.pos-on {
+	right: 120px;
+}
+.btn-show-logboard.on {
+	background-color: #02cbf6;
+	border-color: #08b0d4;
+}
+.btn-show-logboard.on:hover,
+.btn-show-logboard.on:active {
+	background-color: #62e3ff;
+}
+
+/* Listボタン
+------------------------------------------- */
+.btn-switch-list {
+	opacity: 0;
+	z-index: 996;
+}
+.btn-switch-list.pos-on {
+	right: 224px;
+}
+.btn-switch-list.on {
+	background-color: #02cbf6;
+	border-color: #08b0d4;
+}
+.btn-switch-list.on:hover,
+.btn-switch-list.on:active {
+	background-color: #62e3ff;
+}
+
+/* URLボタン
+------------------------------------------- */
+.btn-url-convert {
+	opacity: 0;
+	z-index: 1005;
+	left: 16px;
+}
+.btn-url-convert.pos-on {
+	left: 16px;
+}
+.btn-url-convert.on {
+	background-color: #02cbf6;
+	border-color: #08b0d4;
+}
+.btn-url-convert.on:hover,
+.btn-url-convert.on:active {
+	background-color: #62e3ff;
+}
+
+
+
+
+#urlWholeBg {
+	display: none;
+	position: fixed;
+	background-color: rgba(0,0,0,0.7);
+	width: 100%;
+	height: 100%;
+	transition: all .6s;
+}
+
+.urlContentArea {
+	/*background-color: rgba(255,0,0,0.3);*/
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translateY(-50%) translateX(-50%);
+	/*max-width: 90%;*/
+}
+
+textarea#targetUrl,
+textarea#convertedUrl {
+	padding: 10px;
+	width: 300px;
+	height: 300px;
+	font-size: 12px;
+	line-height: 1.4;
+}
+textarea#targetUrl:focus,
+textarea#convertedUrl:focus {
+	background-color: rgba(255,255,255,1);
+}
+::placeholder {
+	color: #cccccc;
+}
+
+
+/************************************************************************************
+ MEDIA QUERIES
+*************************************************************************************/
+@media screen and (max-width: 3840px), screen and (max-device-width: 3840px) {
+	/* 画面サイズ： 1431px〜 */
+	.item {
+		width: 6%;
+	} 
+}
+@media screen and (max-width: 1430px), screen and (max-device-width: 1430px) {
+	/* 画面サイズ： 1024px〜 */
+	.item {
+		width: 10%;
+	} 
+}
+@media screen and (max-width: 1023px), screen and (max-device-width: 1023px) {
+	/* 画面サイズ： 481px〜 */
+	.item {
+		width: 20%;
+	} 
+}
+@media screen and (max-width: 480px), screen and (max-device-width: 480px) {
+	/* 画面サイズ： 〜480px */
+	.item {
+		width: 33.33%;
+	}
+	#logBoard {
+		min-width: 90%;
+	}
+	.item { height: 100px; }
+	.item .inner { height: 100px; }
+	.item .tag { height: 100px; }
+
+	.btn {
+		width: 80px;
+		height: 80px;
+		line-height: 80px;
+	}
+	.btn-reload.pos-on {
+		bottom: 100px;
+	}
+	.btn-show-logboard.pos-on {
+		right: 100px;
+	}
+	.btn-switch-list.pos-on {
+		right: 184px;
+	}
+	footer .site-title {
+		font-size: 30px;
+	}
+
+
+	.urlContentArea {
+		top: 40%;
+	}
+	textarea#targetUrl,
+	textarea#convertedUrl {
+		height: 200px;
+		font-size: 16px;
+		padding: 5px;
+	}
+
+}
+@media screen and (max-width: 320px), screen and (max-device-width: 320px) {
+	/* 画面サイズ： 〜320px */
+	.item {
+		width: 50%;
+	}
+	#logBoard {
+		min-width: 90%;
+	}
+	.item { height: 100px; }
+	.item .inner { height: 100px; }
+	.item .tag { height: 100px; }
+
+	.btn {
+		width: 80px;
+		height: 80px;
+		line-height: 80px;
+	}
+	.btn-reload.pos-on {
+		bottom: 100px;
+	}
+	.btn-show-logboard.pos-on {
+		right: 100px;
+	}
+	.btn-switch-list.pos-on {
+		right: 184px;
+	}
+	footer .site-title {
+		font-size: 30px;
+	}
+}

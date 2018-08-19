@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pin Bookmarks</title>
+<!-- meta -->
+<meta name="keywords" content="images,upload,pin,bookmarks">
+<meta name="description" content="タグと画像で管理するブックマークツール">
+<meta name="robots" content="noindex,nofollow">
+<meta name="author" content="Tsutomu Takanashi">
+<meta name="copyright" content="Copyright Tsutomu Takanashi 2018. All Rights Reserved.">
+<!-- link file -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
+<link href="http://yui.yahooapis.com/3.18.1/build/cssreset/cssreset-min.css" rel="stylesheet" type="text/css">
+<script src="js/main.js"></script>
+<link href="css/style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="wrapper">
+	<!-- URL変換ツール -->
+	<div id="urlWholeBg">
+		<div class="urlContentArea">
+			<textarea cols="30" rows="10" id="targetUrl" placeholder="【入力】 変換前URL" name="targetUrl" onfocus="this.select();" onblur="urlConverter(this.value, $('[name=convertedUrl]'));"></textarea>
+			<textarea cols="30" rows="10" id="convertedUrl" placeholder="【出力】 変換後URL" name="convertedUrl" onfocus="this.select(); copyToClipboard(this.value);"></textarea>
+		</div>
+	</div>
+
+	<!-- ログボード -->
+	<div id="logBoard">
+		<ul id="list">
+			<li>[ ◆◇◆◇◆ アップロードファイルログ ◆◇◆◇◆ ]</li>
+		</ul>
+	</div>
+
+	<!-- ファイルドロップエリア -->
+	<form action="fileupload.php" method="post" enctype="multipart/form-data" name="frm" id="frm">
+	<div id="dropZone">
+		<p>Drop images here</p>
+		<div class="selectFile">Select images here<input type="file" id="files" name="upfile[]" multiple></div>
+	</div>
+	</form>
+
+	<!-- タグフィルター -->
+	<div class="tagFilter">
+		<ul id="filter" class="flexbox"></ul>
+	</div>
+
+	<!-- コンテンツ -->
+	<div id="content">
+		[ /imagesファイル一覧 ]
+	</div>
+
+	<!-- ボタン -->
+	<div id="btnOption" class="btn btn-option-vis"><span><b>option</b></span></div>
+	<div id="btnReload" class="btn btn-reload"><span><b>reload</b></span></div>
+	<div id="btnShowLogBoard" class="btn btn-show-logboard"><span><b>show Log</b></span></div>
+	<div id="btnSwitchList" class="btn btn-switch-list"><span><b>List</b></span></div>
+
+	<div id="btnUrlConvertTool" class="btn btn-url-convert"><span><b>&lt;- URL -&gt;</b></span></div>
+	<!-- フッター -->
+	<footer>
+		<h1 class="site-title">Pin Bookmarks</h1>
+	</footer>
+</div><!-- /#wrapper -->
+
+<!-- // テンプレート用の記述 start -->
+<!--
+[memo-start]
+	<%= num %>
+	<%= fullFileName %>
+	<%= sepFileName %>
+	<%= minImgPath %>
+	<%= listTagName %>
+	<%= url %>
+	<%= tag %>
+	<%= sepFileExt %>
+[memo-end]
+-->
+<script type="text/template" id="template">
+	<li class="item <%= listTagName %> <%= minImgPath %>">
+		<div class="inner">
+			<a href="<%= url %>"><img src="images/<%= minImgPath %><%= fullFileName %>"></a>
+			<div class="img-overlay-content">
+				<input onfocus="setVal(this)" onkeyup="checkValChange(this, 'input')" type="text" class="text-tag" name="filetag<%= num %>" id="filetag<%= num %>" value="<%= tag %>">
+				<input onfocus="setVal(this)" onkeyup="checkValChange(this, 'input')" type="text" class="text-url" name="fileurl<%= num %>" id="fileurl<%= num %>" value="<%= url %>">
+				<button onclick="renameFiles('<%= num %>', '<%= fullFileName %>', '<%= minImgPath %>', '<%= sepFileExt %>'); showBtnReload(); disabled=true;" name="btn-save-filename" class="btn-save-filename" disabled="">save</button>
+				<button onclick="deleteFiles('<%= num %>', '<%= fullFileName %>', '<%= minImgPath %>', '<%= sepFileExt %>'); showBtnReload();" name="btn-delete" class="btn-delete">×</button>
+			</div>
+		</div>
+	</li>
+</script>
+<!-- // テンプレート用の記述 end -->
+</body>
+</html>

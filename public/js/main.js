@@ -76,6 +76,8 @@ $(function(){
 		$(btnOption).removeClass('on');
 		// オプションボタンoff
 		$(btnSwitchList).removeClass('opacity-100 pos-on on');
+		// URLボタン隠し
+		$(btnUrlConvertTool).toggleClass('opacity-100');
 	});
 
 	// Show Logボタン押下時
